@@ -1,8 +1,8 @@
-import { Dialog, Menu, Transition } from '@headlessui/react'
+import { Dialog, Menu, RadioGroup, Transition } from '@headlessui/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { BeakerIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
+import { BeakerIcon, CheckIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import { Fragment, useState } from 'react'
 
 const links = [
@@ -11,9 +11,31 @@ const links = [
   { href: '/license', label: 'License' },
   { href: '/sign-out', label: 'Sign out' },
 ]
+
+const plans = [
+  {
+    name: 'Startup',
+    ram: '12GB',
+    cpus: '6 CPUs',
+    disk: '160 GB SSD disk',
+  },
+  {
+    name: 'Business',
+    ram: '16GB',
+    cpus: '8 CPUs',
+    disk: '512 GB SSD disk',
+  },
+  {
+    name: 'Enterprise',
+    ram: '32GB',
+    cpus: '12 CPUs',
+    disk: '1024 GB SSD disk',
+  },
+]
 const Home: NextPage = () => {
 
-  let [isOpen, setIsOpen] = useState(true)
+  let [isOpen, setIsOpen] = useState(false)
+  let [selected, setSelected] = useState(plans[0])
 
   return (
     <div className={styles.container}>
@@ -191,6 +213,69 @@ const Home: NextPage = () => {
           </div>
         </div>
 
+        <div className='mt-4'>
+          <h2 className='font-bold text-xl pt-2'>
+            Game Selection
+          </h2>
+          <RadioGroup value={selected} onChange={setSelected} className="font-retro">
+            <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
+            <div className="space-y-2">
+              {plans.map((plan) => (
+                <RadioGroup.Option
+                  key={plan.name}
+                  value={plan}
+                  className={({ active, checked }) =>
+                    `${
+                      active
+                        ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
+                        : ''
+                    }
+                    ${
+                      checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-white'
+                    }
+                      relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
+                  }
+                >
+                  {({ active, checked }) => (
+                    <>
+                      <div className="flex w-full items-center justify-betwee">
+                        <div className="flex items-center">
+                          <div className="text-sm">
+                            <RadioGroup.Label
+                              as="p"
+                              className={`font-medium  ${
+                                checked ? 'text-white' : 'text-gray-900'
+                              }`}
+                            >
+                              {plan.name}
+                            </RadioGroup.Label>
+                            <RadioGroup.Description
+                              as="span"
+                              className={`inline ${
+                                checked ? 'text-sky-100' : 'text-gray-500'
+                              }`}
+                            >
+                              <span>
+                                {plan.ram}/{plan.cpus}
+                              </span>{' '}
+                              <span aria-hidden="true">&middot;</span>{' '}
+                              <span>{plan.disk}</span>
+                            </RadioGroup.Description>
+                          </div>
+                        </div>
+                        {checked && (
+                          <div className="shrink-0 text-white">
+                            <CheckIcon className="h-6 w-6" />
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </RadioGroup.Option>
+              ))}
+            </div>
+          </RadioGroup>
+        </div>
       </div>
     </div>
   )
