@@ -8,6 +8,9 @@ module.exports = {
     extend: {
       fontFamily: {
         'retro': ['"Roboto Mono"', 'monospace']
+      },
+      spacing: {
+        'sidebar-space':"25%"
       }
     },
   },
