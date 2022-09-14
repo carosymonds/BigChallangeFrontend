@@ -79,10 +79,4 @@ const ProductPage:NextPage<Props> = ({ submission }) => {
   )
 }
 
-
-
-
-
-
-
 export default ProductPage
