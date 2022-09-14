@@ -9,6 +9,21 @@ const RegisterPage = () => {
           <h3 className="text-xl text-center">Create account</h3>
           <form action="">
             <div className="grid grid-cols-1 text-sm">
+              <div className="px-4 py-2">
+                <div className="mt-4">
+
+                  <div className="mt-2">
+                    <label className="inline-flex items-center">
+                      <input type="radio" className="form-radio" name="accountType" value="personal" />
+                      <span className="ml-2">Patient</span>
+                    </label>
+                    <label className="inline-flex items-center ml-6">
+                      <input type="radio" className="form-radio" name="accountType" value="busines" />
+                      <span className="ml-2">Doctor</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div className="grid grid-cols-2">
                 <div className="px-4 py-2">
                   <input
@@ -25,6 +40,7 @@ const RegisterPage = () => {
                   />
                 </div>
               </div>
+
               <div className="grid grid-cols-2">
                 <div className="px-4 py-2">
                   <input
