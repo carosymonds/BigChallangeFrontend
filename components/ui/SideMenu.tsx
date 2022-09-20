@@ -6,9 +6,13 @@ import Avatar from 'react-avatar';
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import NextLink from 'next/link';
+import { useContext } from "react";
+import { AuthContext } from "../../context";
 
 
 export default function SideMenu() {
+
+  const { isLoggedIn, logoutUser } = useContext(AuthContext);
 
   return (
       <div
@@ -55,11 +59,9 @@ export default function SideMenu() {
                       <p className="text-sm font-medium text-white">Tom Cook</p>
                     </a>
                   </NextLink>
-                  <NextLink href="/auth/login" className="group block w-full flex-shrink-0">
-                    <a>
-                      <p className="text-xs font-medium text-gray-300  group-hover:text-white">Sign out</p>
-                    </a>
-                  </NextLink>
+                  <button onClick={logoutUser} className="group block w-full flex-shrink-0">
+                      <p className="text-xs font-medium text-gray-300  group-hover:text-white float-left">Sign out</p>
+                  </button>
                 </div>
             </div>
         </div>

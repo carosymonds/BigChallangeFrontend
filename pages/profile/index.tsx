@@ -9,7 +9,7 @@ const ProfilePage = () => {
     
     return (
         <>
-            {false ? <PatientProfile />:
+            {true ? <PatientProfile />:
             <DoctorProfile /> }
         </>
        
