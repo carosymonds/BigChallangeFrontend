@@ -26,7 +26,7 @@ const LoginPage = () => {
     const onLoginUser = async({email, password}: FormData) => {
         try{            
             setFormError(false)
-            const response = loginUser(email, password)
+            const response = await loginUser(email, password)
             router.push(param ?? '/')
         }catch(error){
             setFormError(true)

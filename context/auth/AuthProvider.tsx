@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import axios, { AxiosError } from 'axios';
 import { useSession, signOut } from 'next-auth/react';
 
-import { IUser } from '../../interfaces/user';
+import { FormData, IUser } from '../../interfaces/user';
 import { authReducer } from './authReducer';
 import { useRouter } from 'next/router';
 import submissionsManagerApi from '../../api/submissionsManagerApi';
@@ -23,20 +23,6 @@ const AUTH_INITIAL_STATE: AuthState = {
 interface Props {
     children: React.ReactNode;
 }
-
-type FormData = {
-    email: string,
-    password: string,
-    password_confirmation: string,
-    name: string,
-    role: 'doctor' | 'patient',
-    gender: 'female' | 'male' | 'other',
-    weight: number,
-    height: number,
-    diseases: string,
-    speciality: string,
-    grade: number,
-};
 
 
 export const AuthProvider:FC<Props> = ({ children }) => {
