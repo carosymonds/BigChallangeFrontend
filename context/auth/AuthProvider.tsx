@@ -87,7 +87,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             if ( axios.isAxiosError(error) ) {
                 return {
                     hasError: true,
-                    message: error.response.data.message 
+                    message: error.response?.data as string
                 }
             }
 
