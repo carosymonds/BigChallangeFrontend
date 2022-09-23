@@ -3,7 +3,7 @@ import Head from 'next/head';
 import SideMenu from '../ui/SideMenu';
 import { ILayout } from '../../interfaces/layout';
 
-export const DoctorsLayout:FC<ILayout> = ({ children, title, pageDescription }) => {
+export const PatientLayout:FC<ILayout> = ({ children, title, pageDescription }) => {
   return (
     <>
         <Head>
