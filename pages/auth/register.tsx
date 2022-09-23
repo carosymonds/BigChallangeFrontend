@@ -35,23 +35,28 @@ const RegisterPage = () => {
   } = useForm<FormData>();
   const { registerUser } = useContext(AuthContext);
   const [formError, setFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [gender, setgender] = useState("other");
   const [accountType, setAccountType] = useState("patient");
 
   const router = useRouter();
   const param = router.query.p?.toString();
-  const onRegisterUser = async (data: FormData) => {
+  const onRegisterUser = async (formData: FormData) => {
     try {
       setFormError(false);
-      data.birth = startDate;
-      const response = registerUser(data);
-      console.log(response);
-      // router.push(param ?? '/')
+      formData.birth = startDate;
+      const { hasError, message } = await registerUser(formData);
+      if(hasError){
+        setFormError(true);
+        setErrorMessage(message?.message as string)
+        setTimeout(() => setFormError(false), 3000);
+      }else{
+        router.push(param ?? '/login')
+      }
     } catch (error) {
       setFormError(true);
       setTimeout(() => setFormError(false), 3000);
-      console.log(error);
     }
   };
 
@@ -361,6 +366,14 @@ const RegisterPage = () => {
                   )}
                 </div>
               </div>
+              {formError && (
+                <div className="flex pt-2 pl-2 text-red-700">
+                  <ExclamationTriangleIcon className="w-6 h-6 transition duration-75" />
+                  <p className="px-2">
+                    {errorMessage}
+                  </p>
+                </div>
+              )}
               <div className="flex items-baseline justify-between px-4">
                 <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
                   Register
