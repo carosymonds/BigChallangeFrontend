@@ -6,12 +6,10 @@ import { PatientLayout } from '../layouts'
 export const PatientProfile = () => {
     const [startDate, setStartDate] = useState(new Date());
 
-    const handleDateSelect = (date: Date) => {
+    const handleDate = (date: Date) => {
         setStartDate(date)
     }
-    const handleDateChange = (date: Date) => {
-        setStartDate(date)
-    }
+
     return (
         <PatientLayout title="Profile" pageDescription="Profile">
             <div className="bg-white p-8">
@@ -73,8 +71,8 @@ export const PatientProfile = () => {
                                 <div>
                                     <ReactDatePicker className='w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600'
                                         selected={startDate}
-                                        onSelect={handleDateSelect} 
-                                        onChange={handleDateChange}
+                                        onSelect={handleDate} 
+                                        onChange={handleDate}
                                         popperPlacement="bottom-start"
                                     />
                                 </div>

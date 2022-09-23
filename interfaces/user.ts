@@ -9,3 +9,17 @@ export interface IUser {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export interface FormData {
+    email: string;
+    password: string;
+    password_confirmation: string;
+    name: string;
+    role: 'doctor' | 'patient';
+    gender: 'female' | 'male' | 'other';
+    weight: number;
+    height: number;
+    diseases: string;
+    speciality: string;
+    grade: number;
+};

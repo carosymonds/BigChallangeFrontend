@@ -1,15 +1,9 @@
 import { FC } from 'react';
 import Head from 'next/head';
 import SideMenu from '../ui/SideMenu';
+import { ILayout } from '../../interfaces/layout';
 
-interface Props {
-    title: string;
-    pageDescription: string;
-    imageFullUrl?: string;
-    children: React.ReactNode;
-}
-
-export const PatientLayout:FC<Props> = ({ children, title, pageDescription, imageFullUrl }) => {
+export const PatientLayout:FC<ILayout> = ({ children, title, pageDescription }) => {
   return (
     <>
         <Head>
