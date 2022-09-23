@@ -1,13 +1,12 @@
 import { FC, useReducer, useEffect } from 'react';
 import { AuthContext } from './';
 import Cookies from 'js-cookie';
-import axios, { AxiosError } from 'axios';
+import axios from '../../services/base.services';
 import { useSession, signOut } from 'next-auth/react';
 
 import { IUser } from '../../interfaces/user';
 import { authReducer } from './authReducer';
 import { useRouter } from 'next/router';
-import submissionsManagerApi from '../../api/submissionsManagerApi';
 
 export interface AuthState {
     isLoggedIn: boolean;
@@ -48,7 +47,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
     const loginUser = async( email: string, password: string ): Promise<boolean> => {
         try {
-            const { data } = await submissionsManagerApi.post('/login', { email, password });
+            const { data } = await axios.post('/login', { email, password });
             const { token, user } = data;
             Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user});
@@ -60,7 +59,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
     const logoutUser = async(): Promise<boolean> => {
         try {
-            const { data } = await submissionsManagerApi.post('/logout');
+            const { data } = await axios.post('/logout');
             if(data.status == 200){
                 router.push('auth/login')
                 Cookies.remove('token')
@@ -75,7 +74,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
     const registerUser = async( registerData: FormData ): Promise<{hasError: boolean; message?: string}> => {
         try {
-            const { data } = await submissionsManagerApi.post('/register', registerData);
+            const { data } = await axios.post('/register', registerData);
             const { token, user } = data;
             Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
@@ -84,12 +83,6 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             }
 
         } catch (error: any) {           
-            if ( axios.isAxiosError(error) ) {
-                return {
-                    hasError: true,
-                    message: error.response?.data as string
-                }
-            }
 
             return {
                 hasError: true,

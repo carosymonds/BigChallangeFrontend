@@ -1,13 +1,11 @@
-import { useState, useContext, useEffect } from 'react';
-import { NextPage, GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { NextPage} from 'next';
 import { ISubmission } from '../../../interfaces/submission';
 import { DoctorsLayout } from '../../../components/layouts';
 import { ArrowLongLeftIcon } from '@heroicons/react/24/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { getSubmission } from '../../../context';
-import { useRouter } from 'next/router';
 import { useQuery } from 'react-query'
+import { GetSubmissionById } from '../../../services/submission.services';
 
 interface Props {
     submission: ISubmission,
@@ -19,12 +17,10 @@ const AdminSubmissionPage:NextPage<Props> = ({params}) => {
 
     const fetchData = async () => {
         try {
-            const {id} = params;
-            const data = await getSubmission(id?.toString() ?? '');
+            const data = await GetSubmissionById(params.id?.toString() ?? '');
             return data;
-            
         } catch (error: any) {
-            console.log('error')
+            console.log(error)
         }
     };
 
