@@ -1,4 +1,5 @@
 import { ArrowLongLeftIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import moment from 'moment'
 import React, { useContext, useState } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import { useForm } from 'react-hook-form'
@@ -14,7 +15,8 @@ import { SuccessComponent } from '../ui/SuccessComponent'
 export const PatientProfile = () => {
 
     const handleDate = (date: Date) => {
-        setValue('birth', formatDate(date))
+        const formattedDate = moment(date).format('YYYY-MM-DD');
+        setValue('birth', formattedDate)
         setStartDate(date)
     }
     const { isLoggedIn, user } = useContext(AuthContext);
@@ -22,8 +24,9 @@ export const PatientProfile = () => {
         try {
             if(user){
                 const data = await GetPatientInformation(user.id);
-                var date = new Date(data?.birth);
+                const date = new Date(data?.birth);
                 handleDate(date)
+                const formattedDate = moment(date).format('YYYY-MM-DD');
                 setGender(data?.gender);
                 setValue('email', data?.email);
                 setValue('gender', data?.gender);
@@ -31,7 +34,7 @@ export const PatientProfile = () => {
                 setValue('weight', data?.weight)
                 setValue('diseases', data?.diseases)
                 setValue('previous_treatments', data?.previous_treatments)
-                setValue('birth', formatDate(date))
+                setValue('birth', formattedDate)
                 return data;
             }
         } catch (error: any) {
@@ -66,17 +69,6 @@ export const PatientProfile = () => {
         setValue('gender', e.currentTarget.value);
         setGender(e.currentTarget.value);
     };
-
-    const formatDate = (date: Date) => {
-        // Get year, month, and day part from the date
-        var year = date.toLocaleString("default", { year: "numeric" });
-        var month = date.toLocaleString("default", { month: "2-digit" });
-        var day = date.toLocaleString("default", { day: "2-digit" });
-
-        // Generate yyyy-mm-dd date string
-        var formattedDate = year + "-" + month + "-" + day;
-        return formattedDate;
-    }
  
     const { isLoading, isError, data, error } = useQuery(
         "profile",
