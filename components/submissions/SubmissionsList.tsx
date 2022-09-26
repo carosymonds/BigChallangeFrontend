@@ -7,7 +7,7 @@ import { ErrorComponent } from "../ui/ErrorComponent";
 import { LoaderComponent } from "../ui/LoaderComponent";
 
 export const SubmissionsList = () => {
-  const columns = [SubmissionTable.SUBMISSION_TITLE, SubmissionTable.PATIENT_NAME, SubmissionTable.STATUS, SubmissionTable.SUBMISSION_TITLE]
+  const columns = [SubmissionTable.SUBMISSION_TITLE, SubmissionTable.PATIENT_NAME, SubmissionTable.STATUS, SubmissionTable.VIEW]
   const { isLoading, isError, data, error } = useQuery(
     "submissions",
     GetSubmissions

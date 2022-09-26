@@ -12,7 +12,7 @@ import { AuthContext } from "../../context";
 
 export default function SideMenu() {
 
-  const { isLoggedIn, logoutUser } = useContext(AuthContext);
+  const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
 
   return (
       <div
@@ -49,14 +49,14 @@ export default function SideMenu() {
                 <div>
                   <NextLink href="/profile" passHref className="group block w-full flex-shrink-0">
                     <a>
-                      <Avatar name="Tom Cook" color="gray" size="60" round="50px"  className="inline-block h-9 w-9" />
+                      <Avatar name={user?.name} color="gray" size="60" round="50px"  className="inline-block h-9 w-9" />
                     </a>
                   </NextLink>
                 </div>
                 <div className="ml-3">
                   <NextLink href="/profile" className="group block w-full flex-shrink-0">
                     <a>
-                      <p className="text-sm font-medium text-white">Tom Cook</p>
+                      <p className="text-sm font-medium text-white">{user?.name}</p>
                     </a>
                   </NextLink>
                   <button onClick={logoutUser} className="group block w-full flex-shrink-0">
