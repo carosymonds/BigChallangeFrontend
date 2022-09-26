@@ -7,12 +7,14 @@ import { AuthContext } from '../../context'
 import { IPatient } from '../../interfaces/patient'
 import { GetPatientInformation, UpdatePatientInformation } from '../../services/profile.services'
 import { PatientLayout } from '../layouts'
+import { ErrorComponent } from '../ui/ErrorComponent'
 import { SuccessComponent } from '../ui/SuccessComponent'
 
 
 export const PatientProfile = () => {
 
     const handleDate = (date: Date) => {
+        setValue('birth', formatDate(date))
         setStartDate(date)
     }
     const { isLoggedIn, user } = useContext(AuthContext);
@@ -61,6 +63,7 @@ export const PatientProfile = () => {
     }
 
     const onGenderChange = (e: any) => {
+        setValue('gender', e.currentTarget.value);
         setGender(e.currentTarget.value);
     };
 
@@ -103,22 +106,7 @@ export const PatientProfile = () => {
                         <div className="grid grid-cols-2">
                             <div className="px-4 py-2">
                                 <h2 className='text-gray-500'>Email</h2>
-                                <input 
-                                    type="text" 
-                                    placeholder="Email"
-                                    {...register("email", { 
-                                        required: "Email Address is required",
-                                        pattern: {
-                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                            message: "Invalid email address"
-                                          }
-                                    })}
-                                    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
-                                    {errors.email && 
-                                    <div className='flex pt-2 pl-2 text-red-700'>
-                                        <ExclamationTriangleIcon className="w-6 h-6 transition duration-75" />
-                                        <p className="px-2">{errors.email?.message}</p>
-                                    </div>}
+                                <span>{data?.email}</span>
                             </div>
                             <div className="px-4 py-2">
                                 <h2 className='text-gray-500'>Gender</h2>
@@ -193,7 +181,7 @@ export const PatientProfile = () => {
                             </div>
                             <div className="px-4 py-2">
                                 <h2 className='text-gray-500'>Diseases</h2>
-                                <textarea 
+                                <textarea disabled
                                     placeholder="Diseases"
                                     {...register("diseases", { 
                                         required: "Diseases is required"
@@ -216,28 +204,9 @@ export const PatientProfile = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="px-4 py-2">
-                                <h2 className='text-gray-500'>Previous treatments</h2>
-                                <textarea 
-                                    placeholder="Previous treatments"
-                                    {...register("previous_treatments", { 
-                                        required: "Previous treatments is required"
-                                    })}
-                                    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
-                                    {errors.previous_treatments && 
-                                    <div className='flex pt-2 pl-2 text-red-700'>
-                                        <ExclamationTriangleIcon className="w-6 h-6 transition duration-75" />
-                                        <p className="px-2">{errors.previous_treatments?.message}</p>
-                                    </div>}
-                            </div>
                         </div>
                         {formError && (
-                            <div className="flex pt-2 pl-2 text-red-700">
-                            <ExclamationTriangleIcon className="w-6 h-6 transition duration-75" />
-                            <p className="px-2">
-                                {errorMessage}
-                            </p>
-                            </div>
+                            <ErrorComponent primaryMessage={errorMessage} />
                         )}
                         {successMessage && (<SuccessComponent primaryMessage={successMessage} />)}
                         <div className='text-right px-4 py-2'>
