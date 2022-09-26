@@ -1,0 +1,15 @@
+import React from 'react'
+import { FC } from 'react';
+
+interface Props {
+    primaryMessage: string;
+    secondaryMessage?: string;
+}
+
+export const SuccessComponent: FC<Props> = ({primaryMessage, secondaryMessage}) => {
+  return (
+    <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+        <span className="font-medium">{primaryMessage}</span> {secondaryMessage}
+    </div>
+  )
+}

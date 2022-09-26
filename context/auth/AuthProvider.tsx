@@ -36,7 +36,9 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             const { data } = await axios.post('/login', { email, password });
             const { token, user } = data;
             Cookies.set('token', token );
-            dispatch({ type: '[Auth] - Login', payload: user});
+            Cookies.set('user',  JSON.stringify(data))
+
+            dispatch({ type: '[Auth] - Login', payload: data});
             return true;
         } catch (error) {
             return false;
@@ -49,6 +51,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             if(data.status == 200){
                 router.push('auth/login')
                 Cookies.remove('token')
+                
             }
             dispatch({ type: '[Auth] - Logout'});
             return true;
@@ -57,13 +60,21 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         }
     }
 
+    useEffect(() => {
+        const user = Cookies.get('user');
+        if ( user ) {
+          dispatch({ type: '[Auth] - Login', payload: JSON.parse(user) as IUser })
+        }
+      
+      }, [  ])
 
     const registerUser = async( registerData: FormData ): Promise<{hasError: boolean; message?: string}> => {
         try {
             const { data } = await axios.post('/register', registerData);
-            const { token, user } = data;
+            const { token } = data;
             Cookies.set('token', token );
-            dispatch({ type: '[Auth] - Login', payload: user });
+            Cookies.set('user',  JSON.stringify(data))
+            dispatch({ type: '[Auth] - Login', payload: data });
             return {
                 hasError: false
             }
