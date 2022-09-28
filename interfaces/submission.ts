@@ -11,3 +11,11 @@ export interface ISubmission {
     updatedAt: string;
 }
 
+export interface ISubmissionForm {
+
+    symptoms: string;
+   
+}
+
+
+

@@ -1,4 +1,5 @@
 import { ArrowLongLeftIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link';
 import React, { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -57,7 +58,11 @@ export const DoctorProfile = () => {
         <DoctorsLayout title="Profile" pageDescription="Profile">
             <form className="bg-white p-8" onSubmit={handleSubmit(updateProfile)} noValidate>
                 <div className='w-full pb-3'>
-                    <ArrowLongLeftIcon className="w-8 h-6 transition duration-75" />
+                    <Link href="/">
+                        <a>
+                            <ArrowLongLeftIcon className="w-8 h-6 transition duration-75" />
+                        </a>
+                    </Link>
                 </div>
                 <div className='border-b-2 border-gray-200 pb-3 flex justify-between'>
                     <div>

@@ -5,7 +5,7 @@ import { ArrowLongLeftIcon } from '@heroicons/react/24/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useQuery } from 'react-query'
-import { GetSubmissionById } from '../../../services/submission.services';
+import { GetSubmissionById, TakeSubmission } from '../../../services/submission.services';
 
 interface Props {
     submission: ISubmission,
@@ -17,7 +17,7 @@ const AdminSubmissionPage:NextPage<Props> = ({params}) => {
 
     const fetchData = async () => {
         try {
-            const data = await GetSubmissionById(params.id?.toString() ?? '');
+            const data = await GetSubmissionById(params.id);
             return data;
         } catch (error: any) {
             console.log(error)
@@ -44,8 +44,8 @@ const AdminSubmissionPage:NextPage<Props> = ({params}) => {
                         </div>
                         <h2 className="text-xs text-gray-400">{data?.patient_name} • {data?.patient_birth}</h2>
                     </div>
-                    <div>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded">
+                    <div className={data?.state == 'pending' ? 'disabled:opacity-25' : ''}>
+                        <button onClick={()=> TakeSubmission(params.id)} className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded">
                             Accept submission
                         </button>                
                     </div>
