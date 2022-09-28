@@ -43,7 +43,7 @@ const formatSubmissionsResponse = (submissions: SubmissionListResponse) => {
 export const GetAllSubmissionsAsDoctor = async() => {
   
     try {
-        const {data} = await axios.get('/submission?role=doctor&all=yes');
+        const {data} = await axios.get('/submission?role=doctor');
         const submissions = data as SubmissionListResponse;
         return formatSubmissionsResponse(submissions);
     } catch (error) {
@@ -54,7 +54,7 @@ export const GetAllSubmissionsAsDoctor = async() => {
 export const GetAllPendingSubmissionsAsDoctor = async() => {
   
     try {
-        const {data} = await axios.get('/submission?state=pending&role=doctor');
+        const {data} = await axios.get('/submission?role=doctor&all=yes');
         const submissions = data as SubmissionListResponse;
         return formatSubmissionsResponse(submissions);
         

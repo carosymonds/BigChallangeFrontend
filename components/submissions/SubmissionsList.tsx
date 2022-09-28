@@ -54,7 +54,7 @@ export const SubmissionsList = () => {
                       : `py-2 px-8 bg-indigo-100 text-indigo-700 rounded-full`
                   }
                 >
-                  <p>All</p>
+                  <p>In Progress</p>
                 </div>
               </a>
               <a className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8 cursor-pointer	">
@@ -69,13 +69,12 @@ export const SubmissionsList = () => {
                   <p>Pending</p>
                 </div>
               </a>
-              
             </div>
-            <Link href={`submission/new`}>
+            {user?.role =='patient' &&<Link href={`submission/new`}>
               <a className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
                   <p className="text-sm font-medium leading-none text-white">New</p>
               </a>
-            </Link>
+            </Link>}
           </div>
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal">
