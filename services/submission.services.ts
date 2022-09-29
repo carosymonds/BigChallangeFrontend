@@ -41,7 +41,11 @@ const formatSubmissionsResponse = (submissions: SubmissionListResponse) => {
 }
 
 export const GetAllSubmissionsAsDoctor = async() => {
-  
+    const config = { 
+        params: {
+           role: 'doctor'
+        } 
+    }
     try {
         const {data} = await axios.get('/submission?role=doctor');
         const submissions = data as SubmissionListResponse;
@@ -52,9 +56,14 @@ export const GetAllSubmissionsAsDoctor = async() => {
 }
 
 export const GetAllPendingSubmissionsAsDoctor = async() => {
-  
+    const config = { 
+        params: {
+           role: 'doctor',
+           all: 'yes'
+        } 
+    }
     try {
-        const {data} = await axios.get('/submission?role=doctor&all=yes');
+        const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
         return formatSubmissionsResponse(submissions);
         
@@ -64,9 +73,13 @@ export const GetAllPendingSubmissionsAsDoctor = async() => {
 }
 
 export const GetAllSubmissionsAsPatient = async() => {
-  
+    const config = { 
+        params: {
+           role: 'patient'
+        } 
+      }
     try {
-        const {data} = await axios.get('/submission?role=patient');
+        const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
         return formatSubmissionsResponse(submissions);
         
@@ -76,9 +89,14 @@ export const GetAllSubmissionsAsPatient = async() => {
 }
 
 export const GetPendingSubmissionsAsPatient = async() => {
-  
+    const config = { 
+        params: {
+           role: 'patient',
+           state: 'pending'
+        } 
+      }
     try {
-        const {data} = await axios.get('/submission?state=pending&role=patient');
+        const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
         return formatSubmissionsResponse(submissions);
         
@@ -96,6 +114,8 @@ export const GetSubmissionById = async( id: string ) => {
             state: submission.state,
             patient_email: submission.patient.email,
             patient_name: submission.patient.name,
+            doctor_name: submission?.doctor?.name,
+            doctor_speciality: submission?.doctor?.doctorInformation?.speciality,
             symptoms: submission.symptoms,
             patient_birth: submission.patient.patientInformation.birth,
             prescriptions: submission.prescriptions,
@@ -136,6 +156,21 @@ export const CreateSubmission = async( submissionData: ISubmission ) => {
 export const UpdateSymptoms = async( id: string, submissionData: ISubmission ) => {
     try {
         const {data} = await axios.put(`/submission/${id}/patient`, submissionData);
+        return data.message;
+    } catch (error: any) {
+        console.log(error);
+        return {
+            hasError: true,
+            message: error.response.data.message
+        }
+    }
+}
+
+export const UploadPrescription = async( id: string, file: ISubmission ) => {
+    try {
+        const datas = new FormData()
+        datas.append('prescriptions', file?.prescriptions[0])
+        const {data} = await axios.post(`/submission/${id}/prescription`, datas);
         return data.message;
     } catch (error: any) {
         console.log(error);
