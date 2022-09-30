@@ -1,5 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
 import {
+  ArrowLeftOnRectangleIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from 'react-avatar';
@@ -12,7 +13,7 @@ import { AuthContext } from "../../context";
 
 export default function SideMenu() {
 
-  const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
+  const { user, logoutUser } = useContext(AuthContext);
 
   return (
       <div
@@ -33,7 +34,7 @@ export default function SideMenu() {
                   
                 </li>
                 <li>
-                  <NextLink href="/">
+                  <NextLink href="/history">
                     <a
                         className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
@@ -60,7 +61,7 @@ export default function SideMenu() {
                     </a>
                   </NextLink>
                   <button onClick={logoutUser} className="group block w-full flex-shrink-0">
-                      <p className="text-xs font-medium text-gray-300  group-hover:text-white float-left">Sign out</p>
+                    <p className="text-xs font-medium text-gray-300  group-hover:text-white float-left">Sign out</p>
                   </button>
                 </div>
             </div>
