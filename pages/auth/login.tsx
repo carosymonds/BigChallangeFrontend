@@ -9,6 +9,9 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Cookies from 'js-cookie';
 import * as cookie from 'cookie';
+import { ErrorComponent } from '../../components/ui/ErrorComponent';
+import { SuccessComponent } from '../../components/ui/SuccessComponent';
+import { LoaderOverlay } from '../../components/ui/LoaderOverlayComponent';
 
 
 type FormData = {
@@ -21,13 +24,25 @@ const LoginPage = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
     const { loginUser } = useContext(AuthContext);
     const [formError, setFormError] = useState(false)
+    const [successMessage, setSuccessMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isUploading, setIsLoading] = useState("");
+
     const router = useRouter();
     const param = router.query.p?.toString();
     const onLoginUser = async({email, password}: FormData) => {
         try{            
             setFormError(false)
+            setIsLoading('Authenticating...')
             const response = await loginUser(email, password)
-            router.push(param ?? '/')
+            if(response.hasError){
+                setFormError(true)
+                setErrorMessage(response?.message as string)
+            }else{
+                setSuccessMessage(response)
+                router.push(param ?? '/')
+            }
+            setIsLoading('')
         }catch(error){
             setFormError(true)
             setTimeout(() => setFormError(false), 3000)
@@ -37,6 +52,8 @@ const LoginPage = () => {
 
     return (
         <AuthLayout title={'Login'}>
+            {isUploading && <LoaderOverlay primaryMessage={""} fullScreen={true} />}
+
             <div className="flex items-center justify-center min-h-screen bg-gray-100 text-gray-500 w-3/6	">
                 <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg w-4/6">
                     <h3 className="text-xl text-center">Login to your account</h3>
@@ -75,6 +92,13 @@ const LoginPage = () => {
                                         <p className="px-2">{errors.password?.message}</p>
                                     </div>}
                             </div>
+                            {formError && (
+                                <div className='mt-3'>
+                                     <ErrorComponent primaryMessage={errorMessage} />
+                                </div>
+                            )}
+                            {successMessage && (<SuccessComponent primaryMessage={successMessage} />)}
+
                             <div className="flex items-baseline justify-between">
                                 <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
                                 <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
@@ -89,6 +113,7 @@ const LoginPage = () => {
                                     </Link>
                                 </p>
                             </div>
+                            
                         </div>
                     </form>
                 </div>

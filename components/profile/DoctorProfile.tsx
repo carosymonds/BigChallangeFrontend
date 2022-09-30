@@ -8,6 +8,7 @@ import { IDoctor } from '../../interfaces/doctor';
 import { GetDoctorInformation, UpdateDoctorInformation } from '../../services/profile.services';
 import { DoctorsLayout } from '../layouts'
 import { ErrorComponent } from '../ui/ErrorComponent';
+import { LoaderOverlay } from '../ui/LoaderOverlayComponent';
 import { SuccessComponent } from '../ui/SuccessComponent';
 
 export const DoctorProfile = () => {
@@ -29,9 +30,12 @@ export const DoctorProfile = () => {
     const [formError, setFormError] = useState(false)
     const [successMessage, setSuccessMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('');
+    const [isUploading, setIsLoading] = useState("");
+
     const updateProfile = async(data: IDoctor) => {
         try{            
             setFormError(false)
+            setIsLoading("Updating...")
             const response = await UpdateDoctorInformation(data);
             if(response.hasError){
                 setFormError(true)
@@ -40,7 +44,7 @@ export const DoctorProfile = () => {
                 setSuccessMessage(response)
                 setTimeout(() => setSuccessMessage(''), 5000)
             }
-
+            setIsLoading("")
         }catch(error){
             setFormError(true)
             console.log(error)
@@ -56,6 +60,7 @@ export const DoctorProfile = () => {
       );
     return (
         <DoctorsLayout title="Profile" pageDescription="Profile">
+            {isUploading && <LoaderOverlay primaryMessage={isUploading} />}
             <form className="bg-white p-8" onSubmit={handleSubmit(updateProfile)} noValidate>
                 <div className='w-full pb-3'>
                     <Link href="/">

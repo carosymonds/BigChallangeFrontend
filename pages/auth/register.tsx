@@ -9,6 +9,7 @@ import { AuthContext } from "../../context";
 import "react-datepicker/dist/react-datepicker.css";
 import { GetServerSideProps } from "next";
 import * as cookie from 'cookie';
+import { LoaderOverlay } from "../../components/ui/LoaderOverlayComponent";
 
 type FormData = {
   email: string;
@@ -39,6 +40,7 @@ const RegisterPage = () => {
 
   const [gender, setgender] = useState("other");
   const [accountType, setAccountType] = useState("patient");
+  const [isUploading, setIsLoading] = useState("");
 
   const router = useRouter();
   const param = router.query.p?.toString();
@@ -46,14 +48,15 @@ const RegisterPage = () => {
     try {
       setFormError(false);
       formData.birth = startDate;
-      const { hasError, message } = await registerUser(formData);
-      if(hasError){
+      setIsLoading('Creating account...')
+      const response = await registerUser(formData);
+      if(response.hasError){
         setFormError(true);
-        setErrorMessage(message?.message as string)
-        setTimeout(() => setFormError(false), 3000);
+        setErrorMessage(response.message as string)
       }else{
-        router.push(param ?? '/login')
+        router.push(param ?? '/auth/login')
       }
+      setIsLoading('')
     } catch (error) {
       setFormError(true);
       setTimeout(() => setFormError(false), 3000);
@@ -82,6 +85,7 @@ const RegisterPage = () => {
 
   return (
     <AuthLayout title={"Login"}>
+      {isUploading && <LoaderOverlay primaryMessage={""} fullScreen={true} />}
       <div className="flex items-center justify-center min-h-screen bg-gray-100 text-gray-500 w-full">
         <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg w-4/6">
           <h3 className="text-xl text-center">Create account</h3>
