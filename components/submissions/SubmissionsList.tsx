@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { SubmissionTable } from "../../constants/Enums";
+import { Roles, States, SubmissionTable } from "../../constants/Enums";
 import { AuthContext } from "../../context";
 import { GetSubmissions } from "../../services/submission.services";
 import { ErrorComponent } from "../ui/ErrorComponent";
@@ -70,7 +70,7 @@ export const SubmissionsList = () => {
                 </div>
               </a>
             </div>
-            {user?.role =='patient' &&<Link href={`submission/new`}>
+            {user?.role == Roles.Patient && <Link href={`submission/new`}>
               <a className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded">                  
               <p className="text-sm font-medium leading-none text-white">New</p>
               </a>
@@ -112,10 +112,10 @@ export const SubmissionsList = () => {
                       </span>
                     </td>
                     <td className="px-5 py-5 border-b text-center border-gray-200 bg-white text-sm text-blue-600">
-                      {user?.role == "patient" ? (
+                      {user?.role == Roles.Patient ? (
                         <Link href={`submission/${submission.id}`}>
                           <a>
-                            <p>{submission.state == 'pending' ? "Edit" : "View"}</p>
+                            <p>{submission.state == States.Pending ? "Edit" : "View"}</p>
                           </a>
                         </Link>
                       ) : (
