@@ -5,3 +5,14 @@ export enum SubmissionTable {
     STATUS = "Status",
     VIEW = ""
 }
+
+export enum Roles {
+    Patient = "Patient",
+    Doctor = "Doctor",
+}
+
+export enum States {
+    Pending = "pending",
+    Inprogress = "inProgress",
+    Ready = "ready",
+}

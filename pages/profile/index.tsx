@@ -5,6 +5,7 @@ import DatePicker, { CalendarContainer } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { DoctorProfile, PatientProfile } from '../../components/profile';
 import { AuthContext } from '../../context';
+import { Roles } from '../../constants/Enums';
 
 const ProfilePage = () => {
 
@@ -12,7 +13,7 @@ const ProfilePage = () => {
 
     return (
         <>
-            {user?.role == 'patient' ? <PatientProfile />:
+            {user?.role == Roles.Patient ? <PatientProfile />:
             <DoctorProfile /> }
         </>
        

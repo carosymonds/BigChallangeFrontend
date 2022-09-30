@@ -25,7 +25,7 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
 
     const [successMessage, setSuccessMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('');
-    const [isUploading, setIsLoading] = useState("");
+    const [isUploading, setIsLoading] = useState('');
 
     const router = useRouter();
 
