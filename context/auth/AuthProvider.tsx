@@ -2,8 +2,6 @@ import { FC, useReducer, useEffect } from 'react';
 import { AuthContext } from './';
 import Cookies from 'js-cookie';
 import axios from '../../services/base.services';
-import { useSession, signOut } from 'next-auth/react';
-
 import { FormData, IUser } from '../../interfaces/user';
 import { authReducer } from './authReducer';
 import { useRouter } from 'next/router';
@@ -31,17 +29,23 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     const router = useRouter();
   
 
-    const loginUser = async( email: string, password: string ): Promise<boolean> => {
+    const loginUser = async( email: string, password: string ): Promise<any> => {
         try {
             const { data } = await axios.post('/login', { email, password });
-            const { token, user } = data;
-            Cookies.set('token', token );
-            Cookies.set('user',  JSON.stringify(data))
-
-            dispatch({ type: '[Auth] - Login', payload: data});
-            return true;
-        } catch (error) {
+            if(data.status == 200){
+                const { token } = data;
+                Cookies.set('token', token );
+                Cookies.set('user',  JSON.stringify(data))
+                dispatch({ type: '[Auth] - Login', payload: data});
+                return data.message;
+            }
             return false;
+        } catch (error: any) {
+            console.log(error);
+            return {
+                hasError: true,
+                message: error.response.data.message
+            }
         }
     }
 
@@ -49,9 +53,9 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         try {
             const { data } = await axios.post('/logout');
             if(data.status == 200){
-                router.push('auth/login')
+                router.replace('/auth/login')
                 Cookies.remove('token')
-                
+                delete axios.defaults.headers.common["Authorization"];
             }
             dispatch({ type: '[Auth] - Logout'});
             return true;
@@ -63,7 +67,9 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     useEffect(() => {
         const user = Cookies.get('user');
         if ( user ) {
-          dispatch({ type: '[Auth] - Login', payload: JSON.parse(user) as IUser })
+            const cookie = Cookies.get('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${cookie}`;
+            dispatch({ type: '[Auth] - Login', payload: JSON.parse(user) as IUser })
         }
       
       }, [  ])
@@ -74,7 +80,9 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             const { token } = data;
             Cookies.set('token', token );
             Cookies.set('user',  JSON.stringify(data))
+
             dispatch({ type: '[Auth] - Login', payload: data });
+
             return {
                 hasError: false
             }
@@ -83,7 +91,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
             return {
                 hasError: true,
-                message: 'No se pudo crear el usuario - intente de nuevo'
+                message: error.response.data.message
             }
         }
     }
