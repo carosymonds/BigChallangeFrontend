@@ -1,21 +1,23 @@
 import axios from "../services/base.services";
 import { SubmissionListResponse } from "../interfaces/submission-list";
 import { ISubmission } from "../interfaces/submission";
+import Cookies from "js-cookie";
 
-export const GetSubmissions = (role :string, isPendingSelected?: boolean ) => {
-  
+export const GetSubmissions = (role :string, isPendingSelected?: boolean, showHistory?: boolean ) => {
+    const cookie = Cookies.get('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${cookie}`;
     try {
         if(role == 'doctor') {
             if(isPendingSelected){
-                return GetAllPendingSubmissionsAsDoctor();
+                return GetAllPendingSubmissionsAsDoctor(showHistory);
             }
-            return GetAllSubmissionsAsDoctor();
+            return GetAllSubmissionsAsDoctor(showHistory);
         }
         if(role == 'patient'){
             if(isPendingSelected){
                 return GetPendingSubmissionsAsPatient();
             }
-            return GetAllSubmissionsAsPatient();
+            return GetAllSubmissionsAsPatient(showHistory);
         }        
     } catch (error) {
         console.error(error);
@@ -40,22 +42,26 @@ const formatSubmissionsResponse = (submissions: SubmissionListResponse) => {
     return table;
 }
 
-export const GetAllSubmissionsAsDoctor = async() => {
+export const GetAllSubmissionsAsDoctor = async(showHistory?: boolean) => {
     const config = { 
         params: {
            role: 'doctor'
         } 
     }
+    debugger
     try {
-        const {data} = await axios.get('/submission?role=doctor');
+        const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
+        if(showHistory){
+            submissions.data = submissions.data.filter((submission) => submission.state == 'ready');
+        }
         return formatSubmissionsResponse(submissions);
     } catch (error) {
         console.error(error);
     }
 }
 
-export const GetAllPendingSubmissionsAsDoctor = async() => {
+export const GetAllPendingSubmissionsAsDoctor = async(showHistory?: boolean) => {
     const config = { 
         params: {
            role: 'doctor',
@@ -65,6 +71,9 @@ export const GetAllPendingSubmissionsAsDoctor = async() => {
     try {
         const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
+        if(showHistory){
+            submissions.data = submissions.data.filter((submission) => submission.state == 'ready');
+        }
         return formatSubmissionsResponse(submissions);
         
     } catch (error) {
@@ -72,7 +81,7 @@ export const GetAllPendingSubmissionsAsDoctor = async() => {
     }
 }
 
-export const GetAllSubmissionsAsPatient = async() => {
+export const GetAllSubmissionsAsPatient = async(showHistory?: boolean) => {
     const config = { 
         params: {
            role: 'patient'
@@ -81,6 +90,9 @@ export const GetAllSubmissionsAsPatient = async() => {
     try {
         const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
+        if(showHistory){
+            submissions.data = submissions.data.filter((submission) => submission.state == 'ready');
+        }
         return formatSubmissionsResponse(submissions);
         
     } catch (error) {
@@ -166,11 +178,37 @@ export const UpdateSymptoms = async( id: string, submissionData: ISubmission ) =
     }
 }
 
-export const UploadPrescription = async( id: string, file: ISubmission ) => {
+export const UploadPrescription = async( id: string, file: File ) => {
     try {
         const datas = new FormData()
-        datas.append('prescriptions', file?.prescriptions[0])
+        datas.append('prescriptions', file)
         const {data} = await axios.post(`/submission/${id}/prescription`, datas);
+        return data.message;
+    } catch (error: any) {
+        console.log(error);
+        return {
+            hasError: true,
+            message: error.response.data.message
+        }
+    }
+}
+
+export const DeleteSubmission = async( id: string ) => {
+    try {
+        const {data} = await axios.delete(`/submission/${id}`);
+        return data.message;
+    } catch (error: any) {
+        console.log(error);
+        return {
+            hasError: true,
+            message: error.response.data.message
+        }
+    }
+}
+
+export const DeletePrescription = async( id: string ) => {
+    try {
+        const {data} = await axios.delete(`/submission/${id}/prescription`);
         return data.message;
     } catch (error: any) {
         console.log(error);

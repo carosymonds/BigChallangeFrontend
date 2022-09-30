@@ -6,7 +6,7 @@ const Home: NextPage = () => {
 
   return (
     <DoctorsLayout title={`Doctor's Manager`} pageDescription={`Manage your patient's data`}>
-      <SubmissionsList />
+      <SubmissionsList showfilters={true}/>
     </DoctorsLayout>
   )
 }
