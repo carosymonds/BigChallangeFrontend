@@ -4,9 +4,7 @@ import { useQuery } from "react-query";
 import { SubmissionTable } from "../../constants/Enums";
 import { AuthContext } from "../../context";
 import { GetSubmissions } from "../../services/submission.services";
-import { StateComponent } from "../ui";
-import { ErrorComponent } from "../ui/ErrorComponent";
-import { LoaderComponent } from "../ui/LoaderComponent";
+import { StateComponent, ErrorComponent, LoaderComponent, LoaderOverlay  } from "../ui";
 
 interface Props {
   showfilters?: boolean;
@@ -34,11 +32,11 @@ export const SubmissionsList:FC<Props> = ({showfilters}) => {
     }
     return [];
   }
-
-  const { isLoading, isError, data } = useQuery(["submissions", isPendingSelected, showfilters ], () => fetchData(isPendingSelected, showfilters));
+  
+  const { isLoading, isError, data } = useQuery(["submissions", isPendingSelected, showfilters, user ], () => fetchData(isPendingSelected, showfilters));
  
   if (isLoading) {
-    return <LoaderComponent />;
+    return <LoaderOverlay primaryMessage="Loding submissions..." />;
   }
   if (isError) {
     return <ErrorComponent primaryMessage="No submissions found" />;
