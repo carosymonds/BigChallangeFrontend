@@ -48,7 +48,6 @@ export const GetAllSubmissionsAsDoctor = async(showHistory?: boolean) => {
            role: 'doctor'
         } 
     }
-    debugger
     try {
         const {data} = await axios.get('/submission', config);
         const submissions = data as SubmissionListResponse;
