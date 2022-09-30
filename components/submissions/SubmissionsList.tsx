@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { SubmissionTable } from "../../constants/Enums";
+import { Roles, States, SubmissionTable } from "../../constants/Enums";
 import { AuthContext } from "../../context";
 import { GetSubmissions } from "../../services/submission.services";
 import { ErrorComponent } from "../ui/ErrorComponent";
@@ -54,7 +54,7 @@ export const SubmissionsList = () => {
                       : `py-2 px-8 bg-indigo-100 text-indigo-700 rounded-full`
                   }
                 >
-                  <p>In Progress</p>
+                  <p>All</p>
                 </div>
               </a>
               <a className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8 cursor-pointer	">
@@ -70,10 +70,11 @@ export const SubmissionsList = () => {
                 </div>
               </a>
             </div>
-            {user?.role =='patient' &&<Link href={`submission/new`}>
-              <a className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
-                  <p className="text-sm font-medium leading-none text-white">New</p>
+            {user?.role == Roles.Patient && <Link href={`submission/new`}>
+              <a className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded">                  
+              <p className="text-sm font-medium leading-none text-white">New</p>
               </a>
+         
             </Link>}
           </div>
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -111,16 +112,16 @@ export const SubmissionsList = () => {
                       </span>
                     </td>
                     <td className="px-5 py-5 border-b text-center border-gray-200 bg-white text-sm text-blue-600">
-                      {user?.role == "patient" ? (
+                      {user?.role == Roles.Patient ? (
                         <Link href={`submission/${submission.id}`}>
                           <a>
-                            <p>Edit</p>
+                            <p>{submission.state == States.Pending ? "Edit" : "View"}</p>
                           </a>
                         </Link>
                       ) : (
                         <Link href={`admin/submission/${submission.id}`}>
                           <a>
-                            <p>View</p>
+                            <p>Edit</p>
                           </a>
                         </Link>
                       )}

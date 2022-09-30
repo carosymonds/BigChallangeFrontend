@@ -6,15 +6,16 @@ export interface ISubmission {
     phone: string;
     symptoms: string;
     status: 'pending'|'inprogress'|'completed'
-
     createdAt: string;
     updatedAt: string;
+    prescriptions: string;
 }
 
 export interface ISubmissionForm {
 
     symptoms: string;
-   
+    prescription: File,
+
 }
 
 
