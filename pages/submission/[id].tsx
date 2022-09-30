@@ -6,11 +6,12 @@ import { PatientLayout } from '../../components/layouts';
 import { ISubmission } from '../../interfaces/submission';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { CreateSubmission, GetSubmissionById, UpdateSymptoms } from '../../services/submission.services';
+import { CreateSubmission, DeleteSubmission, GetSubmissionById, UpdateSymptoms } from '../../services/submission.services';
 import { ErrorComponent } from '../../components/ui/ErrorComponent';
 import { SuccessComponent } from '../../components/ui/SuccessComponent';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
+import { LoaderOverlay } from '../../components/ui/LoaderOverlayComponent';
 
 interface Props {
     params: any
@@ -24,6 +25,8 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
 
     const [successMessage, setSuccessMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('');
+    const [isUploading, setIsLoading] = useState("");
+
     const router = useRouter();
 
     useEffect(() => {
@@ -35,18 +38,35 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
     const submitForm = async(data: ISubmission) => {
         try{            
             setFormError(false)
-            
+            setIsLoading(isEditMode ? 'Updating...' : 'Creating...')
             const response = isEditMode ? await UpdateSymptoms(params.id, data) : await CreateSubmission(data);
             if(response.hasError){
                 setFormError(true)
                 setErrorMessage(response?.message as string)
             }else{
                 setSuccessMessage(response)
-                setTimeout(() => router.push('/'), 5000)
+                router.push('/')
             }
-
+            setIsLoading('')
         }catch(error){
             setFormError(true)
+            console.log(error)
+        }
+    }
+
+    const deleteSubmission = async () => {
+        try {
+            setIsLoading('Deleting...')
+            const response = await DeleteSubmission(params.id);
+            if(response.hasError){
+                setFormError(true)
+                setErrorMessage(response?.message as string)
+            }else{
+                setSuccessMessage(response)
+                setTimeout(() => router.push('/'), 1000)
+            }
+            setIsLoading("")
+        } catch (error: any) {
             console.log(error)
         }
     }
@@ -68,6 +88,7 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<ISubmission>();
     return (
         <PatientLayout title="Submission" pageDescription="Submission">
+            {isUploading && <LoaderOverlay primaryMessage={isUploading} />}
             <form className="bg-white p-8" onSubmit={handleSubmit(submitForm)} noValidate >
                 <div className="bg-white p-8">
                     <div className='w-full pb-3 flex justify-between'>
@@ -76,9 +97,9 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
                                 <ArrowLongLeftIcon className="w-8 h-6 transition duration-75" />
                             </a>
                         </Link>
-                        <button>
+                        {isEditMode  && data?.state == 'pending' && <button onClick={()=> deleteSubmission()}>
                             <TrashIcon className="w-8 h-6 transition duration-75" />
-                        </button>
+                        </button>}
                     </div>
                     <div className='border-b-2 border-gray-200 pb-3 flex justify-between'>
                         <div>
@@ -123,7 +144,7 @@ const SubmissionPage:NextPage<Props> = ({ params }) => {
                                 </div>
                                 <div className="px-4 py-2">
                                     <h2 className='text-gray-500 mb-2'>Prescriptions</h2>
-                                    <Link href={data?.prescriptions}>
+                                    <Link href={data?.prescriptions} target="_blank">
                                         <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
                                             <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
                                             <span>Download</span>
