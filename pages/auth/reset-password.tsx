@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams, useSearchParams } from "react-router-dom";
 import { AuthLayout } from "../../components/layouts";
 
 import {
@@ -39,7 +38,6 @@ const ResetPassowrd = () => {
 
   const onRegisterUser = async (formData: FormData) => {
     try {
-      debugger
       const token = router.query.token as string;
       setFormError(false);
       setIsLoading("Sending email...");
