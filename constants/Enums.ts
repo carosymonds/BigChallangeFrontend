@@ -2,13 +2,14 @@
 export enum SubmissionTable {
     SUBMISSION_TITLE = "Submission title",
     PATIENT_NAME = "Patient name",
+    DOCTOR_NAME = "Doctor name",
     STATUS = "Status",
     VIEW = ""
 }
 
 export enum Roles {
-    Patient = "Patient",
-    Doctor = "Doctor",
+    Patient = "patient",
+    Doctor = "doctor",
 }
 
 export enum States {

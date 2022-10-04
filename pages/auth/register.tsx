@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { GetServerSideProps } from "next";
 import * as cookie from 'cookie';
 import { LoaderOverlay } from "../../components/ui/LoaderOverlayComponent";
+import { Roles } from "../../constants/Enums";
 
 type FormData = {
   email: string;
@@ -88,7 +89,10 @@ const RegisterPage = () => {
       {isUploading && <LoaderOverlay primaryMessage={""} fullScreen={true} />}
       <div className="flex items-center justify-center min-h-screen bg-gray-100 text-gray-500 w-full">
         <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg w-4/6">
-          <h3 className="text-xl text-center">Create account</h3>
+          <div className="text-center">
+            <h1 className="font-bold text-3xl text-gray-900">REGISTER</h1>
+            <p>Enter your information to register</p>
+          </div>
           <form onSubmit={handleSubmit(onRegisterUser)} noValidate>
             <div className="grid grid-cols-1 text-sm">
               <div className="px-4 py-2">
@@ -291,7 +295,7 @@ const RegisterPage = () => {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-2">
+              {accountType == Roles.Doctor && <div className="grid grid-cols-2">
                 <div className="px-4 py-2">
                   <input
                     placeholder="Speciality"
@@ -323,7 +327,7 @@ const RegisterPage = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div>}
               <div className="grid grid-cols-2">
                 <div className="px-4 py-2">
                   <input
@@ -378,24 +382,24 @@ const RegisterPage = () => {
                   </p>
                 </div>
               )}
-              <div className="flex items-baseline justify-between px-4">
-                <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
-                  Register
+              <div className="flex items-baseline justify-between px-4 mt-5">
+                <button
+                  type="submit"
+                  className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                >
+                  Register now
                 </button>
-                <a href="#" className="text-sm text-blue-600 hover:underline">
-                  Forgot password?
+              </div>
+              <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
+                  <p className="text-center font-semibold mx-4 mb-0">
+                    Do you have an account?
+                  </p>
+              </div>
+              <Link href="/auth/login">
+                <a className="px-7 py-3 text-gray-400 border-gray-400 font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
+                  Login
                 </a>
-              </div>
-              <div className="mt-5 pt-2 border-t-2 border-gray-200 align-middle">
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Do you have an account?{" "}
-                  <Link href="/auth/login">
-                    <a className="font-medium text-primary-600 hover:underline dark:text-primary-500">
-                      Login
-                    </a>
-                  </Link>
-                </p>
-              </div>
+              </Link>
             </div>
           </form>
         </div>
