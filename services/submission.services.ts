@@ -34,6 +34,7 @@ const formatSubmissionsResponse = (submissions: SubmissionListResponse) => {
         }
         table.push({
             patient_name: element.patient.name,
+            doctor_name: element?.doctor?.name,
             state: element.state,
             title: title,
             id: element.id
@@ -118,6 +119,10 @@ export const GetPendingSubmissionsAsPatient = async() => {
 
 export const GetSubmissionById = async( id: string ) => {
     try {
+        const cookie = Cookies.get('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${cookie}`;
+        axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*";
+
         const {data} = await axios.get(`/submission/${id}`);
         const submission = data.data;
         return {
@@ -153,7 +158,7 @@ export const TakeSubmission = async( id: string ) => {
 
 export const CreateSubmission = async( submissionData: ISubmission ) => {
     try {
-        const {data} = await axios.post('/createSubmission', submissionData);
+        const {data} = await axios.post('/createSubmission',submissionData);
         return data.message;
     } catch (error: any) {
         console.log(error);
@@ -193,6 +198,10 @@ export const UploadPrescription = async( id: string, file: File ) => {
 }
 
 export const DeleteSubmission = async( id: string ) => {
+    const cookie = Cookies.get('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${cookie}`;
+    axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*";
+
     try {
         const {data} = await axios.delete(`/submission/${id}`);
         return data.message;
@@ -207,6 +216,7 @@ export const DeleteSubmission = async( id: string ) => {
 
 export const DeletePrescription = async( id: string ) => {
     try {
+        
         const {data} = await axios.delete(`/submission/${id}/prescription`);
         return data.message;
     } catch (error: any) {

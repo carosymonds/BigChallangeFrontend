@@ -32,14 +32,17 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     const loginUser = async( email: string, password: string ): Promise<any> => {
         try {
             const { data } = await axios.post('/login', { email, password });
-            if(data.status == 200){
+            if(data.status == 200 && data.email_verified_at){
                 const { token } = data;
                 Cookies.set('token', token );
                 Cookies.set('user',  JSON.stringify(data))
                 dispatch({ type: '[Auth] - Login', payload: data});
                 return data.message;
             }
-            return false;
+            return {
+                hasError: true,
+                message: "Your email address is not verified."
+            };
         } catch (error: any) {
             console.log(error);
             return {
