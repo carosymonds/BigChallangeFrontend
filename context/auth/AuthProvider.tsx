@@ -77,14 +77,42 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     const registerUser = async( registerData: FormData ): Promise<{hasError: boolean; message?: string}> => {
         try {
             const { data } = await axios.post('/register', registerData);
-            const { token } = data;
-            Cookies.set('token', token );
-            Cookies.set('user',  JSON.stringify(data))
-
-            dispatch({ type: '[Auth] - Login', payload: data });
-
             return {
                 hasError: false
+            }
+
+        } catch (error: any) {           
+
+            return {
+                hasError: true,
+                message: error.response.data.message
+            }
+        }
+    }
+
+    const forgotPassword = async( email: String ): Promise<{hasError: boolean; message: string}> => {
+        try {
+            const { data } = await axios.post('/forgot-password', {email});
+            return {
+                hasError: false,
+                message: data.message
+            }
+
+        } catch (error: any) {           
+
+            return {
+                hasError: true,
+                message: error.response.data.message
+            }
+        }
+    }
+
+    const resetPassword = async(email: string, password:string , password_confirmation: string, token: string): Promise<{hasError: boolean; message: string}> => {
+        try {
+            const { data } = await axios.post('/reset-password', {email, password, password_confirmation, token});
+            return {
+                hasError: false,
+                message: data.message
             }
 
         } catch (error: any) {           
@@ -105,8 +133,9 @@ export const AuthProvider:FC<Props> = ({ children }) => {
             // Methods
             loginUser,
             registerUser,
-            logoutUser
-
+            logoutUser,
+            forgotPassword,
+            resetPassword
         }}>
             { children }
         </AuthContext.Provider>
