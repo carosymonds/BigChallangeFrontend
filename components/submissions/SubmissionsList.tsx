@@ -7,7 +7,7 @@ import { PlusSmallIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import React, { FC, useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { Roles, States, SubmissionTable } from "../../constants/Enums";
+import { isPatient, Roles, States, SubmissionTable } from "../../constants/Enums";
 import { AuthContext } from "../../context";
 import { GetSubmissions } from "../../services/submission.services";
 import {
@@ -26,7 +26,7 @@ export const SubmissionsList: FC<Props> = ({ showfilters }) => {
 
   const columns = [
     SubmissionTable.SUBMISSION_TITLE,
-    user?.role == Roles.Patient ? SubmissionTable.DOCTOR_NAME : SubmissionTable.PATIENT_NAME,
+    isPatient(user) ? SubmissionTable.DOCTOR_NAME : SubmissionTable.PATIENT_NAME,
     SubmissionTable.STATUS,
     SubmissionTable.VIEW,
   ];
@@ -155,7 +155,7 @@ export const SubmissionsList: FC<Props> = ({ showfilters }) => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-left">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {user?.role == 'patient' ? submission?.doctor_name || '-' : submission.patient_name}
+                        {isPatient(user) ? submission?.doctor_name || '-' : submission.patient_name}
                       </p>
                     </td>
 
@@ -163,7 +163,7 @@ export const SubmissionsList: FC<Props> = ({ showfilters }) => {
                       <StateComponent state={submission.state} />
                     </td>
                     <td className="px-5 py-5 border-b text-center border-gray-200 bg-white text-sm text-blue-600">
-                      {user?.role == Roles.Patient ? (
+                      {isPatient(user) ? (
                         <Link href={`submission/${submission.id}`}>
                           <a>
                             <p>

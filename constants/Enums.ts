@@ -1,3 +1,4 @@
+import { IUser } from "../interfaces/user";
 
 export enum SubmissionTable {
     SUBMISSION_TITLE = "Submission title",
@@ -17,3 +18,6 @@ export enum States {
     Inprogress = "inProgress",
     Ready = "ready",
 }
+
+
+export const isPatient = (user?: IUser) => user?.role === Roles.Patient 
