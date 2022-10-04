@@ -12,7 +12,6 @@ export async function middleware(req : any) {
     const url = req.url;
 
     if (url.includes("/auth")) {
-        console.log('entra1')
         if(token && token != undefined){
             return NextResponse.redirect(`${origin}`);
         }else{
@@ -22,8 +21,6 @@ export async function middleware(req : any) {
 
     if (url.includes("/submission") || url.includes("/history") || url.includes("/profile") || pathname == "/") {
         if(token == undefined){
-            console.log('entra2')
-
             return NextResponse.redirect(`${origin}/auth/login`);
         }
     }
