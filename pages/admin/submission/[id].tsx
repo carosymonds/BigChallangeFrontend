@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { ISubmission } from "../../../interfaces/submission";
 import { DoctorsLayout } from "../../../components/layouts";
 import { ArrowLongLeftIcon } from "@heroicons/react/24/solid";
-import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import {
@@ -12,10 +12,12 @@ import {
   UploadPrescription,
 } from "../../../services/submission.services";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { LoaderOverlay } from "../../../components/ui/LoaderOverlayComponent";
 import { StateComponent } from "../../../components/ui";
+import { AuthContext } from "../../../context";
+import Modal from "../../../components/ui/ModalComponent";
 
 interface Props {
   submission: ISubmission;
@@ -57,6 +59,9 @@ const AdminSubmissionPage: NextPage<Props> = ({ params }) => {
     }
   };
 
+  const [showModal, setShowModal] = useState(false);
+
+
   const onFilechange = (e: any) => {
     hanldeUploadPrescription(e.target.files[0]);
   };
@@ -81,32 +86,14 @@ const AdminSubmissionPage: NextPage<Props> = ({ params }) => {
     }
   }
 
-  const deleteSubscription = async () => {
-    try {
-        setIsLoading("Deleting...")
-
-      const response = await DeletePrescription(params.id);
-      if (response.hasError) {
-        setFormError(true);
-        setErrorMessage(response?.message as string);
-      } else {
-        setSuccessMessage(response);
-      }
-      setIsLoading("")
-
-    } catch (error: any) {
-      console.log(error);
-    }
-  };
-
   const { isLoading, isError, data, error, refetch} = useQuery(
-    "submissions",
-    fetchData
+   [ "submission"], fetchData, 
   );
+  
 
   return (
     <DoctorsLayout title="Submission" pageDescription="Submission">
-    {isUploading && <LoaderOverlay primaryMessage={isUploading} />}
+    {(isUploading || isLoading) && <LoaderOverlay primaryMessage={isUploading} />}
       <div className="bg-white p-8">
         <div className="w-full pb-3">
           <Link href="/">
@@ -118,7 +105,7 @@ const AdminSubmissionPage: NextPage<Props> = ({ params }) => {
         <div className="border-b-2 border-gray-200 pb-3 flex justify-between">
           <div>
             <div className="flex">
-              <h1 className="text-gray-900 font-medium text-xl leading-8 my-1">
+              <h1 className="text-gray-900 font-medium text-xl leading-8 my-1 pr-2">
                 {data?.title}
               </h1>
               <StateComponent state={data?.state} />
@@ -134,9 +121,10 @@ const AdminSubmissionPage: NextPage<Props> = ({ params }) => {
             >
               <button
                 onClick={() => hanldeTakeSubmission()}
-                className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-600 text-sm  text-white py-2 px-4 rounded flex pr-2 align-middle"
               >
-                Accept submission
+                Accept
+                <CheckBadgeIcon className="w-6 pl-1"/>
               </button>
             </div>
           )}
@@ -166,44 +154,40 @@ const AdminSubmissionPage: NextPage<Props> = ({ params }) => {
               </div>
             </div>
             <div className="grid grid-cols-1">
-              <form className="px-4 py-2">
-                <h2 className="text-gray-500">
-                  Prescriptions
-                </h2>
-                <div className="my-2">
-                  {data?.prescriptions ? (
-                    <div>
-                      <Link href={data.prescriptions}>
-                        <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
-                          <svg
-                            className="fill-current w-4 h-4 mr-2"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-                          </svg>
-                          <span>Download</span>
-                        </button>
-                      </Link>
-                      <button onClick={() => deleteSubscription()}>
-                        <TrashIcon className="w-8 h-6 transition duration-75" />
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <label className="block mb-2">
-                        <span className="sr-only">Choose File</span>
-                        <input
-                          type="file"
-                          accept="text/plain"
-                          onChangeCapture={onFilechange}
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        />
-                      </label>
-                    </>
-                  )}
-                </div>
-              </form>
+            <div className="px-4 py-2">
+              <h2 className="text-gray-500">
+                Prescriptions
+              </h2>
+              <div className="my-2">
+                {data?.prescriptions ? (
+                  <div>
+                    <Modal prescription={data?.prescriptions} submissionId={params.id} />
+                  </div>
+                ) : (
+                  <>
+                    {data?.state == "pending" ? <label className="block mb-2">
+                      <span className="sr-only">Choose File</span>
+                      <input
+                        type="file"
+                        disabled={true}
+                        accept="text/plain"
+                        onChangeCapture={onFilechange}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:gray-blue-700"
+                      />
+                    </label> : 
+                    <label className="block mb-2">
+                    <span className="sr-only">Choose File</span>
+                    <input
+                      type="file"
+                      accept="text/plain"
+                      onChangeCapture={onFilechange}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      />
+                  </label>}
+                  </>
+                )}
+              </div>
+              </div>
             </div>
             {data?.state == "pending" && (
               <div className="w-full pb-3 flex items-center py-2 px-4 bg-blue-50 text-blue-800 mt-5">
