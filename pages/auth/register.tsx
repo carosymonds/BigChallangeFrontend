@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { GetServerSideProps } from "next";
 import * as cookie from 'cookie';
 import { LoaderOverlay } from "../../components/ui/LoaderOverlayComponent";
+import { Roles } from "../../constants/Enums";
 
 type FormData = {
   email: string;
@@ -294,7 +295,7 @@ const RegisterPage = () => {
                   )}
                 </div>
               </div>
-              {accountType == 'doctor' && <div className="grid grid-cols-2">
+              {accountType == Roles.Doctor && <div className="grid grid-cols-2">
                 <div className="px-4 py-2">
                   <input
                     placeholder="Speciality"
